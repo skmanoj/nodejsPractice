@@ -1,0 +1,1 @@
+This Project makes use of node.js at backend and basic EJS at frontEnd, apart from this it also makes use of node-mailer module to send mails.
