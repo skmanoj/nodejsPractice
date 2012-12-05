@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>
+         Contact Us Page
+      </title>
+      <script type="text/javascript">
+      function ValidateEmail(inputText)
+	{
+		var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+		if(inputText.value.match(mailformat))
+		{
+		document.contact.email.focus();
+		return true;
+		}
+		else
+	{
+		alert("You have entered an invalid email address!");
+		document.contact.email.focus();
+		return false;
+		}
+	}
+
+       </script>      
+   </head>
+   <body>
+      <form name="contact" id="contact" method="post" action="/SendMsg" onsubmit="return ValidateEmail(document.contact.email)">
+         <label for="name">Email: </label>
+	<input type="text" name="email" title="Enter your email" class="required"/>
+	</br>	
+	<label for="sub">Subject: </label>
+	<input type="text" name="subject" title="Enter your subject" class="required"/>
+	</br>
+	<label for="tex">Message: </label>
+	<input type="text" name="msg" title="Enter your message" class="required"/>
+	</br>
+	<input type="submit" name="submit" id="submit" value="Send Message"  />
+      </form>
+   </body>
+</html>
