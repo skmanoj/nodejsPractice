@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>FoundersHub</title>      
+        <link rel="stylesheet" type="text/css" href="./style.css">        
+    </head>
+    <body>
+        <h1>Founders Hub</h1>
+        <form id="founder">
+            <input id="Founder-name" type="text" required="required" placeholder="Founder Name" autofocus/>
+            <input id="Company-name" type="text" required="required" placeholder="Company Name"/>
+            <button>Submit</button>      
+        </form>
+        <hr/>
+        <div id="founder-container"></div>
+        <script type="text/javascript" src="./js/underscore.js"></script> <!--include underscore and jquery scripts before backbone .....damn it -->
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>        
+        <script type="text/javascript" src="./js/backbone.js"></script>
+        <script>
+            
+            (function($){
+                    var fhub = Backbone.Model.extend({
+                        defaults: function()
+                        {
+                            return({
+                                name: '', 
+                                company: ''
+                            });
+                        }
+                    });
+                     
+                    var fhubList = Backbone.Collection.extend({
+                        model: fhub //tells backbone that this is collection of fhub 
+                    });
+                    
+                    var fhubs= new fhubList();
+                    
+                    var fhubView= Backbone.View.extend({
+                        model: new fhub(), //model attached to this view is fhub
+                        tagName: 'div', //we are generating this for each founder company name that we generate
+                        initialize: function()
+                        {
+                            /*create new instance variable called template which uses _.templates to render our template ...
+                            this helps in compiling our template lateron*/
+                            this.template = _.template($('#founderTemplate').html());
+                            //we compile this template in render
+                        },
+                        render: function() //we override render for each one of our views
+                        {
+                            //default imple is to return view itself, but we also change content of element attached to view
+                            this.$el.html(this.template(this.model.toJSON())); //binding it to model...here the variables i.e. name and company is replaced
+                            return this;
+                        } 
+                    });
+                    
+                    var fhubsView = Backbone.View.extend({
+                        model: fhubs,//here model would be collection
+                        el: $('#founder-container'), //saying element which hold this is founder-container
+    					initialize: function() 
+    				    {
+						    this.model.on('add', this.render, this); // on adding a new one call this.render function and  context is this
+					    },
+					    render: function() 
+					   {
+						    var self = this;
+						    self.$el.html('');
+						    _.each(this.model.toArray(), function(f, i) 
+						
+						{
+							self.$el.append((new fhubView({model: f})).render().$el); //appending all list
+						});
+						return this;
+					}
+                    });
+                    
+                    
+                    
+                    $(document).ready(function(){
+                        $('#founder').submit(function(ev){
+                            var f= new fhub({name: $('#Founder-name').val(), company: $('#Company-name').val()});//getting from textboxes using jQuery 
+                            fhubs.add(f);
+                            console.log(fhubs.toJSON());
+                            
+                            return false; // so form doesn't actually submit as we want to display in console
+                           });
+                           
+                           var appView= new fhubsView();    //starts here
+                    });
+/*            var f1= new fhub({name: "manoj",company:"StartUpHub"});
+            var f2= new fhub({name: "vivek",company:"interviewStreet"});
+            var f3= new fhub({name: "sk",company:"KictStart"});
+            var fhubs= new fhubList([f1, f2, f3]);
+            console.log(f1.get('name')+" "+f3.get('company'));
+            console.log(fhubs.toJSON());//this is not json object this is just javascript object to get json use JSON.stringify(fhubs)
+            console.log(JSON.stringify(fhubs));*/
+           })(jQuery);
+           
+           
+       </script>
+       <!-- Templates -->
+       <script type="text/template" id="founderTemplate">
+         <div id="cases">
+            <p>Founder: <span class="Founder" ><%= name %> </span></p>  
+            <p>StartUp: <span class="Company"><%= company %></span></p>     
+         </div>  
+       </script>
+    </body>
+</html>
